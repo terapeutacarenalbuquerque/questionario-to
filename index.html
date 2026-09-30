@@ -45,7 +45,6 @@
         box-shadow: 0 12px 40px rgba(236, 127, 169, 0.12);
     }
 
-    /* LOGO - grande no desktop, menor no celular */
     .logo {
         display: block;
         max-width: 220px;
@@ -262,7 +261,6 @@
     }
     .cta-whatsapp:hover { transform: translateY(-2px); }
 
-    /* RODAPÉ / MARCA D'ÁGUA */
     .footer {
         text-align: center;
         margin-top: 40px;
@@ -328,7 +326,7 @@
 
         <div class="form-group">
             <label for="telefone">Seu WhatsApp (com DDD):</label>
-            <input type="tel" id="telefone" name="telefone" required placeholder="(21) 98832-0329" maxlength="15">
+            <input type="tel" id="telefone" name="telefone" required placeholder="(21) 98832-0329" maxlength="15" inputmode="numeric">
         </div>
 
         <h2>Sobre o comportamento da criança</h2>
@@ -346,12 +344,11 @@
         <p class="result-message" id="resultText"></p>
         <p class="result-note">⚠️ Este resultado é apenas uma triagem educativa. Procure um terapeuta ocupacional para uma avaliação completa.</p>
 
-        <a href="https://wa.me/5521988320329" class="cta-whatsapp" target="_blank">
+        <a id="ctaWhatsapp" href="https://wa.me/5521988320329" class="cta-whatsapp" target="_blank">
             💬 Falar com a Terapeuta Ocupacional Caren
         </a>
     </div>
 
-    <!-- RODAPÉ / MARCA -->
     <div class="footer">
         <div class="footer-brand">Caren • Terapia Ocupacional</div>
         <div class="footer-divider"></div>
@@ -365,10 +362,8 @@
 </div>
 
 <script>
-/* ============================================================
-   NÃO PRECISA MEXER DAQUI PARA BAIXO
-   ============================================================ */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCLe1UWek80NBUlN39DeB1mK5B7spMNxmamobGM3mZiG5NNTPhr-MCiQG6mGyWYi_M/exec';
+const WHATSAPP_TERAPEUTA = '5521988320329';
 
 const questions = [
     "Reage de forma intensa ou desproporcional a sons comuns (liquidificador, aspirador, secador, buzina)?",
@@ -395,132 +390,156 @@ const options = [
     { text: "Sempre",    value: 3 }
 ];
 
-/* ===== ANO ATUAL NO RODAPÉ ===== */
-document.getElementById('anoAtual').textContent = new Date().getFullYear();
+document.addEventListener('DOMContentLoaded', function () {
 
-/* ===== MÁSCARA DE TELEFONE ===== */
-const telefoneInput = document.getElementById('telefone');
-telefoneInput.addEventListener('input', function(e) {
-    let v = e.target.value.replace(/\D/g, '');
-    if (v.length > 11) v = v.slice(0, 11);
+    const anoEl = document.getElementById('anoAtual');
+    if (anoEl) anoEl.textContent = new Date().getFullYear();
 
-    if (v.length > 10) {
-        v = v.replace(/^(\d{2})(\d{5})(\d{4}).*/, '($1) $2-$3');
-    } else if (v.length > 6) {
-        v = v.replace(/^(\d{2})(\d{4})(\d{0,4}).*/, '($1) $2-$3');
-    } else if (v.length > 2) {
-        v = v.replace(/^(\d{2})(\d{0,5}).*/, '($1) $2');
-    } else if (v.length > 0) {
-        v = v.replace(/^(\d*)/, '($1');
-    }
-    e.target.value = v;
-});
+    const telefoneInput = document.getElementById('telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', function (e) {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
 
-/* ===== RENDERIZAÇÃO DAS PERGUNTAS ===== */
-const questionsContainer = document.getElementById('questionsContainer');
-questions.forEach((qText, index) => {
-    const qDiv = document.createElement('div');
-    qDiv.className = 'question';
-    qDiv.innerHTML = `<p>${index + 1}. ${qText}</p>`;
-
-    const optsDiv = document.createElement('div');
-    optsDiv.className = 'options';
-
-    options.forEach((opt, optIdx) => {
-        const lbl = document.createElement('label');
-        const radio = document.createElement('input');
-        radio.type = 'radio';
-        radio.name = `q${index}`;
-        radio.value = opt.value;
-        radio.required = (optIdx === 0);
-        lbl.appendChild(radio);
-        lbl.appendChild(document.createTextNode(opt.text));
-        optsDiv.appendChild(lbl);
-    });
-
-    qDiv.appendChild(optsDiv);
-    questionsContainer.appendChild(qDiv);
-});
-
-/* ===== BARRA DE PROGRESSO ===== */
-const progressFill = document.getElementById('progressFill');
-const progressPercent = document.getElementById('progressPercent');
-
-function updateProgress() {
-    let answered = 0;
-    for (let i = 0; i < questions.length; i++) {
-        if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
-    }
-    const percent = Math.round((answered / questions.length) * 100);
-    progressFill.style.width = percent + '%';
-    progressPercent.textContent = percent + '%';
-}
-
-questionsContainer.addEventListener('change', (e) => {
-    if (e.target.type === 'radio') {
-        const questionDiv = e.target.closest('.question');
-        if (questionDiv) {
-            questionDiv.classList.add('answered');
-            questionDiv.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
-            e.target.closest('label').classList.add('selected');
-        }
-        updateProgress();
-    }
-});
-
-/* ===== ENVIO DO FORMULÁRIO ===== */
-document.getElementById('questionnaireForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const nome = document.getElementById('nome').value;
-    const telefone = document.getElementById('telefone').value;
-    const respostas = [];
-
-    for (let i = 0; i < questions.length; i++) {
-        const sel = document.querySelector(`input[name="q${i}"]:checked`);
-        if (!sel) {
-            alert(`Por favor, responda a pergunta ${i + 1}.`);
-            document.querySelector(`input[name="q${i}"]`).closest('.question')
-                .scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        respostas.push(parseInt(sel.value));
+            if (v.length === 0) {
+                e.target.value = '';
+            } else if (v.length <= 2) {
+                e.target.value = '(' + v;
+            } else if (v.length <= 6) {
+                e.target.value = '(' + v.slice(0, 2) + ') ' + v.slice(2);
+            } else if (v.length <= 10) {
+                e.target.value = '(' + v.slice(0, 2) + ') ' + v.slice(2, 6) + '-' + v.slice(6);
+            } else {
+                e.target.value = '(' + v.slice(0, 2) + ') ' + v.slice(2, 7) + '-' + v.slice(7);
+            }
+        });
     }
 
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Calculando...';
+    const questionsContainer = document.getElementById('questionsContainer');
+    questions.forEach((qText, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'question';
+        qDiv.innerHTML = `<p>${index + 1}. ${qText}</p>`;
 
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify({ nome, telefone, respostas })
+        const optsDiv = document.createElement('div');
+        optsDiv.className = 'options';
+
+        options.forEach((opt, optIdx) => {
+            const lbl = document.createElement('label');
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `q${index}`;
+            radio.value = opt.value;
+            radio.required = (optIdx === 0);
+            lbl.appendChild(radio);
+            lbl.appendChild(document.createTextNode(opt.text));
+            optsDiv.appendChild(lbl);
         });
 
-        const result = await response.json();
+        qDiv.appendChild(optsDiv);
+        questionsContainer.appendChild(qDiv);
+    });
 
-        if (result.success) {
-            document.getElementById('scoreDisplay').textContent = result.pontuacao + ' / 45';
-            document.getElementById('resultText').textContent = result.resultado;
+    const progressFill = document.getElementById('progressFill');
+    const progressPercent = document.getElementById('progressPercent');
 
-            const rc = document.getElementById('resultContainer');
-            rc.className = 'result-container success';
-            rc.style.display = 'block';
-
-            document.getElementById('questionnaireForm').style.display = 'none';
-            rc.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            throw new Error(result.message || 'Erro no servidor.');
+    function updateProgress() {
+        let answered = 0;
+        for (let i = 0; i < questions.length; i++) {
+            if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
         }
-    } catch (error) {
-        console.error(error);
-        const rc = document.getElementById('resultContainer');
-        rc.className = 'result-container error';
-        rc.innerHTML = `<h2>Ops! Algo deu errado.</h2><p>${error.message}</p><p>Tente novamente em instantes.</p>`;
-        rc.style.display = 'block';
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Ver Resultado';
+        const percent = Math.round((answered / questions.length) * 100);
+        progressFill.style.width = percent + '%';
+        progressPercent.textContent = percent + '%';
     }
+
+    questionsContainer.addEventListener('change', (e) => {
+        if (e.target.type === 'radio') {
+            const questionDiv = e.target.closest('.question');
+            if (questionDiv) {
+                questionDiv.classList.add('answered');
+                questionDiv.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+                e.target.closest('label').classList.add('selected');
+            }
+            updateProgress();
+        }
+    });
+
+    document.getElementById('questionnaireForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const telefone = document.getElementById('telefone').value;
+        const respostas = [];
+
+        for (let i = 0; i < questions.length; i++) {
+            const sel = document.querySelector(`input[name="q${i}"]:checked`);
+            if (!sel) {
+                alert(`Por favor, responda a pergunta ${i + 1}.`);
+                document.querySelector(`input[name="q${i}"]`).closest('.question')
+                    .scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            respostas.push(parseInt(sel.value));
+        }
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Calculando...';
+
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ nome, telefone, respostas })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('scoreDisplay').textContent = result.pontuacao + ' / 45';
+                document.getElementById('resultText').textContent = result.resultado;
+
+                let mensagem;
+                if (result.pontuacao >= 23) {
+                    mensagem =
+                        `Olá, Caren! Sou ${nome}.\n\n` +
+                        `Acabei de fazer o questionário "Seu filho precisa de Terapia Ocupacional?" e a pontuação foi ${result.pontuacao}/45, indicando sinais significativos.\n\n` +
+                        `Gostaria de agendar uma avaliação em Terapia Ocupacional com Integração Sensorial. Pode me ajudar?`;
+                } else if (result.pontuacao >= 12) {
+                    mensagem =
+                        `Olá, Caren! Sou ${nome}.\n\n` +
+                        `Acabei de fazer o questionário "Seu filho precisa de Terapia Ocupacional?" e a pontuação foi ${result.pontuacao}/45, com sinais leves/moderados.\n\n` +
+                        `Ainda tenho algumas dúvidas e gostaria de entender melhor se é o caso de uma avaliação. Pode me orientar?`;
+                } else {
+                    mensagem =
+                        `Olá, Caren! Sou ${nome}.\n\n` +
+                        `Acabei de fazer o questionário "Seu filho precisa de Terapia Ocupacional?" e a pontuação foi ${result.pontuacao}/45.\n\n` +
+                        `Ainda tenho algumas dúvidas e gostaria de conversar para entender melhor. Pode me ajudar?`;
+                }
+
+                const linkWhats = 'https://wa.me/' + WHATSAPP_TERAPEUTA + '?text=' + encodeURIComponent(mensagem);
+                document.getElementById('ctaWhatsapp').href = linkWhats;
+
+                const rc = document.getElementById('resultContainer');
+                rc.className = 'result-container success';
+                rc.style.display = 'block';
+
+                document.getElementById('questionnaireForm').style.display = 'none';
+                rc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                throw new Error(result.message || 'Erro no servidor.');
+            }
+        } catch (error) {
+            console.error(error);
+            const rc = document.getElementById('resultContainer');
+            rc.className = 'result-container error';
+            rc.innerHTML = `<h2>Ops! Algo deu errado.</h2><p>${error.message}</p><p>Tente novamente em instantes.</p>`;
+            rc.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Ver Resultado';
+        }
+    });
+
 });
 </script>
 
