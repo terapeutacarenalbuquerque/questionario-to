@@ -100,7 +100,7 @@
         font-size: 0.95rem;
     }
     input[type="email"],
-    input[type="password"] {
+input[type="tel"] {
         width: 100%;
         padding: 14px 18px;
         border: 2px solid var(--borda);
@@ -110,8 +110,8 @@
         background: #FDFBFD;
         transition: border-color 0.2s, background 0.2s;
     }
-    input[type="email"]:focus,
-    input[type="password"]:focus {
+  input[type="email"]:focus,
+input[type="tel"]:focus {
         outline: none;
         border-color: var(--rosa-bebe);
         background: #fff;
@@ -297,10 +297,10 @@
             <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
         </div>
 
-        <div class="form-group">
-            <label for="password">Crie uma senha (mínimo 6 caracteres):</label>
-            <input type="password" id="password" name="password" required minlength="6" placeholder="Sua senha segura">
-        </div>
+       <div class="form-group">
+    <label for="telefone">Seu WhatsApp (com DDD):</label>
+    <input type="tel" id="telefone" name="telefone" required placeholder="(11) 91234-5678">
+</div>
 
         <h2>Sobre o comportamento da criança</h2>
         <p class="instructions">Para cada pergunta, escolha a frequência que melhor descreve o comportamento nos <strong>últimos 6 meses</strong>.</p>
@@ -409,9 +409,9 @@ questionsContainer.addEventListener('change', (e) => {
 document.getElementById('questionnaireForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('password').value;
-    const respostas = [];
+const email = document.getElementById('email').value;
+const telefone = document.getElementById('telefone').value;
+const respostas = [];
 
     for (let i = 0; i < questions.length; i++) {
         const sel = document.querySelector(`input[name="q${i}"]:checked`);
@@ -429,12 +429,10 @@ document.getElementById('questionnaireForm').addEventListener('submit', async fu
     submitBtn.textContent = 'Calculando...';
 
     try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, senha, respostas })
-        });
+       const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ nome, telefone, respostas })
+});
 
         const result = await response.json();
 
