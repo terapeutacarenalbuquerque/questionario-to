@@ -45,10 +45,11 @@
         box-shadow: 0 12px 40px rgba(236, 127, 169, 0.12);
     }
 
+    /* LOGO - grande no desktop, menor no celular */
     .logo {
         display: block;
-        max-width: 110px;
-        margin: 0 auto 18px;
+        max-width: 220px;
+        margin: 0 auto 22px;
     }
 
     h1 {
@@ -261,13 +262,41 @@
     }
     .cta-whatsapp:hover { transform: translateY(-2px); }
 
+    /* RODAPÉ / MARCA D'ÁGUA */
+    .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 24px;
+        border-top: 1px solid var(--borda);
+        font-size: 0.8rem;
+        color: var(--texto-suave);
+        line-height: 1.7;
+    }
+    .footer-brand {
+        font-weight: 700;
+        color: var(--rosa-forte);
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+        margin-bottom: 6px;
+    }
+    .footer-divider {
+        display: inline-block;
+        width: 40px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--rosa-bebe), var(--azul-bebe));
+        border-radius: 3px;
+        margin: 8px auto 10px;
+    }
+
     @media (max-width: 600px) {
         .container { padding: 26px 18px; border-radius: 18px; }
+        .logo { max-width: 150px; }
         h1 { font-size: 1.4rem; }
         .options { gap: 7px; }
         .options label { padding: 7px 11px; font-size: 0.82rem; }
         .result-score { font-size: 2.1rem; }
         .question { padding: 16px; }
+        .footer { font-size: 0.75rem; margin-top: 30px; }
     }
 </style>
 </head>
@@ -275,7 +304,7 @@
 
 <div class="container">
 
-    <img src="logo.png" alt="" class="logo" onerror="this.style.display='none'">
+    <img src="logo.png" alt="Caren - Terapia Ocupacional" class="logo" onerror="this.style.display='none'">
 
     <h1>Seu filho precisa de Terapia Ocupacional?</h1>
     <p class="subtitle">Questionário educativo baseado na abordagem de Integração Sensorial.<br>Não substitui avaliação profissional.</p>
@@ -318,13 +347,27 @@
         <p class="result-note">⚠️ Este resultado é apenas uma triagem educativa. Procure um terapeuta ocupacional para uma avaliação completa.</p>
 
         <a href="https://wa.me/5521988320329" class="cta-whatsapp" target="_blank">
-            💬 Falar com a terapeuta
+            💬 Falar com a Terapeuta Ocupacional Caren
         </a>
+    </div>
+
+    <!-- RODAPÉ / MARCA -->
+    <div class="footer">
+        <div class="footer-brand">Caren • Terapia Ocupacional</div>
+        <div class="footer-divider"></div>
+        <div>Integração Sensorial • Público Infantil</div>
+        <div style="margin-top: 8px;">
+            © <span id="anoAtual"></span> Caren - Terapia Ocupacional.<br>
+            Todos os direitos reservados.
+        </div>
     </div>
 
 </div>
 
 <script>
+/* ============================================================
+   NÃO PRECISA MEXER DAQUI PARA BAIXO
+   ============================================================ */
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCLe1UWek80NBUlN39DeB1mK5B7spMNxmamobGM3mZiG5NNTPhr-MCiQG6mGyWYi_M/exec';
 
 const questions = [
@@ -351,6 +394,9 @@ const options = [
     { text: "Frequente", value: 2 },
     { text: "Sempre",    value: 3 }
 ];
+
+/* ===== ANO ATUAL NO RODAPÉ ===== */
+document.getElementById('anoAtual').textContent = new Date().getFullYear();
 
 /* ===== MÁSCARA DE TELEFONE ===== */
 const telefoneInput = document.getElementById('telefone');
