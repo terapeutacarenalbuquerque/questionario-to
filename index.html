@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seu filho precisa de Terapia Ocupacional?</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --rosa-bebe:      #F8BBD0;
+        --rosa-forte:     #EC7FA9;
+        --azul-bebe:      #B3E5FC;
+        --azul-forte:     #4FC3F7;
+        --fundo-suave:    #FDF6F9;
+        --card:           #FFFFFF;
+        --texto:          #3A3A4A;
+        --texto-suave:    #7B7B8B;
+        --borda:          #F0E4EC;
+        --raio:           16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #FDF6F9 0%, #EAF6FD 100%);
+        background-attachment: fixed;
+        color: var(--texto);
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+        background: var(--card);
+        padding: 40px 32px;
+        border-radius: 24px;
+        box-shadow: 0 12px 40px rgba(236, 127, 169, 0.12);
+    }
+
+    .logo {
+        display: block;
+        max-width: 110px;
+        margin: 0 auto 18px;
+    }
+
+    h1 {
+        color: var(--rosa-forte);
+        text-align: center;
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0 0 10px;
+        line-height: 1.3;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: var(--texto-suave);
+        font-size: 0.95rem;
+        margin: 0 0 32px;
+    }
+
+    .progress-wrapper { margin-bottom: 28px; }
+    .progress-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--texto-suave);
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: var(--borda);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--rosa-bebe) 0%, var(--azul-bebe) 100%);
+        border-radius: 20px;
+        transition: width 0.4s ease;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    label {
+        display: block;
+        font-weight: 600;
+        color: var(--texto);
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    input[type="email"],
+    input[type="password"] {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid var(--borda);
+        border-radius: var(--raio);
+        font-size: 16px;
+        font-family: inherit;
+        background: #FDFBFD;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+        outline: none;
+        border-color: var(--rosa-bebe);
+        background: #fff;
+    }
+
+    h2 {
+        color: var(--texto);
+        font-size: 1.2rem;
+        margin: 34px 0 8px;
+        font-weight: 700;
+    }
+
+    .instructions {
+        color: var(--texto-suave);
+        font-size: 0.9rem;
+        margin-bottom: 22px;
+    }
+
+    .question {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #FDF6F9 0%, #F5FBFE 100%);
+        border-radius: var(--raio);
+        border-left: 5px solid var(--rosa-bebe);
+        transition: border-color 0.3s;
+    }
+    .question.answered { border-left-color: var(--azul-forte); }
+
+    .question p {
+        margin: 0 0 14px;
+        font-weight: 500;
+        font-size: 0.98rem;
+        color: var(--texto);
+    }
+
+    .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .options label {
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 9px 16px;
+        border-radius: 30px;
+        background: #fff;
+        border: 2px solid var(--borda);
+        transition: all 0.2s;
+        font-size: 0.88rem;
+        margin: 0;
+        color: var(--texto-suave);
+    }
+
+    .options label:hover {
+        border-color: var(--azul-bebe);
+        color: var(--texto);
+    }
+
+    .options input[type="radio"] {
+        accent-color: var(--rosa-forte);
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .options label.selected {
+        background: var(--rosa-bebe);
+        border-color: var(--rosa-forte);
+        color: #7A2A4A;
+        font-weight: 600;
+    }
+
+    button {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--rosa-bebe) 0%, var(--azul-bebe) 100%);
+        color: #4A2C3D;
+        border: none;
+        border-radius: var(--raio);
+        font-size: 17px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.2s;
+        margin-top: 14px;
+        box-shadow: 0 6px 18px rgba(236, 127, 169, 0.25);
+    }
+    button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(236, 127, 169, 0.35);
+    }
+    button:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    .result-container {
+        display: none;
+        margin-top: 32px;
+        padding: 32px 26px;
+        border-radius: var(--raio);
+        text-align: center;
+    }
+    .result-container.success {
+        background: linear-gradient(135deg, #FDF6F9 0%, #EAF6FD 100%);
+        border: 2px solid var(--rosa-bebe);
+    }
+    .result-container.error {
+        background: #FDF0F0;
+        border: 2px solid #F5A623;
+        color: #8A4A00;
+    }
+    .result-container h2 { margin-top: 0; color: var(--rosa-forte); }
+    .result-score {
+        font-size: 2.6rem;
+        font-weight: 800;
+        margin: 12px 0;
+        background: linear-gradient(135deg, var(--rosa-forte) 0%, var(--azul-forte) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .result-message {
+        font-size: 1rem;
+        color: var(--texto);
+        margin: 14px 0 8px;
+        font-weight: 500;
+    }
+    .result-note {
+        font-size: 0.85rem;
+        color: var(--texto-suave);
+        margin-top: 20px;
+    }
+
+    .cta-whatsapp {
+        display: inline-block;
+        margin-top: 22px;
+        padding: 14px 26px;
+        background: #25D366;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+        transition: transform 0.15s;
+    }
+    .cta-whatsapp:hover { transform: translateY(-2px); }
+
+    @media (max-width: 600px) {
+        .container { padding: 26px 18px; border-radius: 18px; }
+        h1 { font-size: 1.4rem; }
+        .options { gap: 7px; }
+        .options label { padding: 7px 11px; font-size: 0.82rem; }
+        .result-score { font-size: 2.1rem; }
+        .question { padding: 16px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <img src="logo.png" alt="" class="logo" onerror="this.style.display='none'">
+
+    <h1>Seu filho precisa de Terapia Ocupacional?</h1>
+    <p class="subtitle">Questionário educativo baseado na abordagem de Integração Sensorial.<br>Não substitui avaliação profissional.</p>
+
+    <form id="questionnaireForm">
+
+        <div class="progress-wrapper">
+            <div class="progress-text">
+                <span>Progresso do questionário</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Seu melhor e-mail:</label>
+            <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Crie uma senha (mínimo 6 caracteres):</label>
+            <input type="password" id="password" name="password" required minlength="6" placeholder="Sua senha segura">
+        </div>
+
+        <h2>Sobre o comportamento da criança</h2>
+        <p class="instructions">Para cada pergunta, escolha a frequência que melhor descreve o comportamento nos <strong>últimos 6 meses</strong>.</p>
+
+        <div id="questionsContainer"></div>
+
+        <button type="submit" id="submitBtn">Ver Resultado</button>
+    </form>
+
+    <div id="resultContainer" class="result-container">
+        <h2>Resultado da Avaliação</h2>
+        <p>Sua pontuação total foi:</p>
+        <div class="result-score" id="scoreDisplay">0</div>
+        <p class="result-message" id="resultText"></p>
+        <p class="result-note">⚠️ Este resultado é apenas uma triagem educativa. Procure um terapeuta ocupacional para uma avaliação completa.</p>
+
+        <a href="https://wa.me/55521988320329" class="cta-whatsapp" target="_blank">
+            💬 Falar com a terapeuta
+        </a>
+    </div>
+
+</div>
+
+<script>
+/* ============================================================
+   ⚙️ ÚNICA LINHA QUE VOCÊ PRECISA EDITAR AQUI:
+   Cole a URL do seu Apps Script (a que termina em /exec)
+   ============================================================ */
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCLe1UWek80NBUlN39DeB1mK5B7spMNxmamobGM3mZiG5NNTPhr-MCiQG6mGyWYi_M/exec';
+
+const questions = [
+    "Reage de forma intensa ou desproporcional a sons comuns (liquidificador, aspirador, secador, buzina)?",
+    "Incomoda-se ou evita texturas de roupas, etiquetas, costuras, meias, areia, massinha, tinta ou certos alimentos?",
+    "Leva objetos à boca, morde roupas/lápis, chupa dedos ou busca morder/chupar coisas com frequência?",
+    "Evita ou busca excessivamente movimentos de balançar, girar, pular, escorregar, subir ou cair?",
+    "Demonstra medo excessivo de alturas, desequilíbrio, superfícies instáveis ou insegurança em atividades motoras?",
+    "Tem dificuldade para se acalmar, crises intensas, birras prolongadas ou oscilações emocionais frequentes?",
+    "Reage mal a mudanças de rotina, transições de atividade, espera ou interrupções?",
+    "Tem dificuldade para permanecer sentado, prestar atenção, seguir instruções simples ou concluir tarefas?",
+    "Apresenta dificuldade em habilidades motoras finas: recortar, desenhar, colorir, abotoar, usar talheres, pegar lápis?",
+    "Tem dificuldade em atividades diárias: vestir-se, escovar dentes, tomar banho, alimentar-se, usar o banheiro?",
+    "Evita contato físico, brincadeiras sociais ou tem dificuldade para brincar/interagir com outras crianças?",
+    "Tem dificuldade para dormir, despertares frequentes, seletividade alimentar por textura/cor/cheiro ou recusa alimentar?",
+    "Tropeça, esbarra, derruba objetos, parece desajeitado ou evita atividades de coordenação?",
+    "Parece não perceber dor/machucados ou, ao contrário, reclama excessivamente de dores/desconfortos?",
+    "Tem dificuldade para imitar movimentos, aprender habilidades motoras novas ou planejar ações do corpo?"
+];
+
+const options = [
+    { text: "Nunca",     value: 0 },
+    { text: "Às vezes",  value: 1 },
+    { text: "Frequente", value: 2 },
+    { text: "Sempre",    value: 3 }
+];
+
+const questionsContainer = document.getElementById('questionsContainer');
+questions.forEach((qText, index) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'question';
+    qDiv.innerHTML = `<p>${index + 1}. ${qText}</p>`;
+
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'options';
+
+    options.forEach((opt, optIdx) => {
+        const lbl = document.createElement('label');
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = `q${index}`;
+        radio.value = opt.value;
+        radio.required = (optIdx === 0);
+        lbl.appendChild(radio);
+        lbl.appendChild(document.createTextNode(opt.text));
+        optsDiv.appendChild(lbl);
+    });
+
+    qDiv.appendChild(optsDiv);
+    questionsContainer.appendChild(qDiv);
+});
+
+const progressFill = document.getElementById('progressFill');
+const progressPercent = document.getElementById('progressPercent');
+
+function updateProgress() {
+    let answered = 0;
+    for (let i = 0; i < questions.length; i++) {
+        if (document.querySelector(`input[name="q${i}"]:checked`)) answered++;
+    }
+    const percent = Math.round((answered / questions.length) * 100);
+    progressFill.style.width = percent + '%';
+    progressPercent.textContent = percent + '%';
+}
+
+questionsContainer.addEventListener('change', (e) => {
+    if (e.target.type === 'radio') {
+        const questionDiv = e.target.closest('.question');
+        if (questionDiv) {
+            questionDiv.classList.add('answered');
+            questionDiv.querySelectorAll('.options label').forEach(l => l.classList.remove('selected'));
+            e.target.closest('label').classList.add('selected');
+        }
+        updateProgress();
+    }
+});
+
+document.getElementById('questionnaireForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('password').value;
+    const respostas = [];
+
+    for (let i = 0; i < questions.length; i++) {
+        const sel = document.querySelector(`input[name="q${i}"]:checked`);
+        if (!sel) {
+            alert(`Por favor, responda a pergunta ${i + 1}.`);
+            document.querySelector(`input[name="q${i}"]`).closest('.question')
+                .scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        respostas.push(parseInt(sel.value));
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Calculando...';
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha, respostas })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            document.getElementById('scoreDisplay').textContent = result.pontuacao + ' / 45';
+            document.getElementById('resultText').textContent = result.resultado;
+
+            const rc = document.getElementById('resultContainer');
+            rc.className = 'result-container success';
+            rc.style.display = 'block';
+
+            document.getElementById('questionnaireForm').style.display = 'none';
+            rc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            throw new Error(result.message || 'Erro no servidor.');
+        }
+    } catch (error) {
+        console.error(error);
+        const rc = document.getElementById('resultContainer');
+        rc.className = 'result-container error';
+        rc.innerHTML = `<h2>Ops! Algo deu errado.</h2><p>${error.message}</p><p>Tente novamente em instantes.</p>`;
+        rc.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Ver Resultado';
+    }
+});
+</script>
+
+</body>
+</html>
